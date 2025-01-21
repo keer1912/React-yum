@@ -135,4 +135,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Logout route
+router.post('/logout', (req, res) => {
+  // Invalidate the token on the client side
+  res.status(200).json({ message: 'Logout successful' });
+});
+
 export default router;
