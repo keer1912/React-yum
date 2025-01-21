@@ -24,7 +24,7 @@ const MyRecipes = ({ userId }) => {
       try {
         const response = await apiClient.get(`/recipes/${userId}`);
 
-        if (!response.data) {
+        if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
