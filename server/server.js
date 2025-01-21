@@ -55,3 +55,8 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const endpoints = listEndpoints(app);
 console.log(endpoints);
+
+console.log('Current directory:', __dirname);
+console.log('Serving from:', path.join(__dirname, 'dist'));
+
+app.use(express.static(path.join(__dirname, 'dist')));
