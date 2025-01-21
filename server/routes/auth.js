@@ -6,9 +6,9 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
-// Enable CORS for the frontend domain
+// Enable CORS for the frontend domain (NO TRAILING SLASH)
 router.use(cors({
-  origin: 'https://react-yum.vercel.app/', // Replace with your actual Vercel frontend URL
+  origin: 'https://react-yum.vercel.app', // Replace with your actual Vercel frontend URL
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
