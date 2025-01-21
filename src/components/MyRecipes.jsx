@@ -22,18 +22,13 @@ const MyRecipes = ({ userId }) => {
       if (!userId) return;
 
       try {
-        const response = await fetch(`/api/recipes/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await apiClient.get(`/recipes/${userId}`);
 
-        if (!response.ok) {
+        if (!response.data) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        setRecipes(data);
+        setRecipes(response.data);
       } catch (err) {
         console.error("Error fetching recipes:", err);
       }
