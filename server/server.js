@@ -27,11 +27,11 @@ const __dirname = path.resolve();
 // app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Serve static files from the root dist folder
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, '../dist')));  // Use the correct path
 
-// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
+// Serve index.html for any non-API request
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../dist', 'index.html')); // Updated path
 });
 
 // Connect to MongoDB
@@ -57,6 +57,6 @@ const endpoints = listEndpoints(app);
 console.log(endpoints);
 
 console.log('Current directory:', __dirname);
-console.log('Serving from:', path.join(__dirname, 'dist'));
+console.log('Serving from:', path.join(__dirname, '../dist'));
 
 app.use(express.static(path.join(__dirname, 'dist')));
