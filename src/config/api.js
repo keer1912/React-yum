@@ -50,8 +50,7 @@ export const apiClient = {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(data),
-      // Add credentials if your API requires them
-      credentials: 'include'
+
     });
     return handleResponse(response);
   },
@@ -67,7 +66,6 @@ export const apiClient = {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(data),
-      credentials: 'include'
     });
     return handleResponse(response);
   },
@@ -80,7 +78,6 @@ export const apiClient = {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
-      credentials: 'include'
     });
     return handleResponse(response);
   }
