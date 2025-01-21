@@ -10,8 +10,9 @@ const router = express.Router();
 
 router.use(cors({
   origin: 'https://react-yum.vercel.app', // Replace with your actual Vercel frontend URL
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 const openai = new OpenAI({

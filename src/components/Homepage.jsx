@@ -136,15 +136,17 @@ const Homepage = () => {
         diets: filters.diets
       };
       
-      // Log the full request data
-      console.log('Sending request with data:', requestData);
-
-      const data = await apiClient.post('/recipes/generate', requestData);
-      console.log('Received response:', data);
-      setGeneratedRecipe(data);
+     // Add error handling for the response
+    const response = await apiClient.post('/recipes/generate', requestData);
+    
+    if (response.data) {
+      setGeneratedRecipe(response.data);
+    } else {
+      throw new Error('No recipe data received');
+    }
     } catch (error) {
       console.error("Error:", error);
-      setError("Sorry, I have never heard of these mysterious ingredients. Please try again.");
+      setError(error.response?.data?.message || "Failed to generate recipe. Please try again.");
     } finally {
       setLoading(false);
     }
