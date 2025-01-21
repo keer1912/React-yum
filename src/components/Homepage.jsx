@@ -100,7 +100,7 @@ const Homepage = () => {
         // Add visual feedback
         const successMessage = document.createElement('div');
         successMessage.textContent = 'Recipe saved successfully!';
-        successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg';
+        successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg  font-roboto-mono';
         document.body.appendChild(successMessage);
         
         // Remove the message after 3 seconds
@@ -233,7 +233,7 @@ const Homepage = () => {
                  generateRecipe(); // Reuse existing function
                }}
                disabled={loading}
-               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2"
+               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2 font-roboto-mono"
              >
                {loading ? (
                  <span className="animate-pulse">Generating...</span>
@@ -259,7 +259,7 @@ const Homepage = () => {
                  isSaved 
                    ? 'bg-green-500 hover:bg-green-600' 
                    : 'bg-blue-500 hover:bg-blue-600'
-               } text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2`}
+               } text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2 font-roboto-mono`}
              >
                {isSaved ? (
                  <>
