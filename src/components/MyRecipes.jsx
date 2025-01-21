@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import NavBar from "./NavBar";
 
-const MyRecipes = ({ userId }) => {
+const MyRecipes = ({ userId, userData }) => {
   const [recipeTitle, setRecipeTitle] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);

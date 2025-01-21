@@ -145,7 +145,11 @@ const Homepage = () => {
       // Log the received response
       console.log('Received response:', data);
 
-      setGeneratedRecipe(data);
+      if (response.status === 200) {
+        setGeneratedRecipe(data);
+      } else {
+        setError(data.message || 'Failed to generate recipe. Please try again.');
+      }
     } catch (error) {
       console.error("Error:", error);
       setError(error.response?.data?.message || error.message || 'An unexpected error occurred.');
