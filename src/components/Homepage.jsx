@@ -220,32 +220,60 @@ const Homepage = () => {
             </div>
 
             {generatedRecipe && (
-        <div className="mt-10">
-          <div className="flex justify-between items-start">
-            <h3 className="text-2xl md:text-3xl font-bold font-roboto-mono">
-              {generatedRecipe.title}
-            </h3>
-            <button
-            onClick={saveRecipe}
-            disabled={isSaved}
-            className={`${
-              isSaved 
-                ? 'bg-green-500 hover:bg-green-600' 
-                : 'bg-blue-500 hover:bg-blue-600'
-            } text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2`}
-          >
-            {isSaved ? (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                Saved!
-              </>
-            ) : (
-              'Save Recipe'
-            )}
-          </button>
-          </div>
+         <div className="mt-10">
+         <div className="flex justify-between items-start">
+           <h3 className="text-2xl md:text-3xl font-bold font-roboto-mono">
+             {generatedRecipe.title}
+           </h3>
+           <div className="flex gap-2"> {/* Add a container for both buttons */}
+             <button
+               onClick={() => {
+                 setLoading(true);
+                 setIsSaved(false); // Reset saved state for regeneration
+                 generateRecipe(); // Reuse existing function
+               }}
+               disabled={loading}
+               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2"
+             >
+               {loading ? (
+                 <span className="animate-pulse">Generating...</span>
+               ) : (
+                 <>
+                   <svg 
+                     xmlns="http://www.w3.org/2000/svg" 
+                     className="h-5 w-5" 
+                     viewBox="0 0 24 24" 
+                     fill="none" 
+                     stroke="currentColor"
+                   >
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                   </svg>
+                   Regenerate
+                 </>
+               )}
+             </button>
+             <button
+               onClick={saveRecipe}
+               disabled={isSaved}
+               className={`${
+                 isSaved 
+                   ? 'bg-green-500 hover:bg-green-600' 
+                   : 'bg-blue-500 hover:bg-blue-600'
+               } text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2`}
+             >
+               {isSaved ? (
+                 <>
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                   </svg>
+                   Saved!
+                 </>
+               ) : (
+                 'Save Recipe'
+               )}
+             </button>
+           </div>
+         </div>
 
           <h4 className="text-xl md:text-2xl font-bold font-roboto-mono mt-4">
             Ingredients
