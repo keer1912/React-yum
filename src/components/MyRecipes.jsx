@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import NavBar from "./NavBar";
+import { apiClient } from "../config/api";
 
 const MyRecipes = ({ userId }) => {
   const [recipeTitle, setRecipeTitle] = useState('');
@@ -136,7 +137,7 @@ const MyRecipes = ({ userId }) => {
 
       let response;
       if (selectedRecipe) {
-        response = await axios.put(
+        response = await apiClient.put(
           `/api/recipes/${selectedRecipe._id}`,
           recipeData
         );
@@ -146,7 +147,7 @@ const MyRecipes = ({ userId }) => {
           )
         );
       } else {
-        response = await axios.post('/api/recipes', recipeData);
+        response = await apiClient.post('/api/recipes', recipeData);
         setRecipes(prevRecipes => [...prevRecipes, response.data]);
       }
 
@@ -162,7 +163,7 @@ const MyRecipes = ({ userId }) => {
 
   const handleDeleteRecipe = async () => {
     try {
-      await axios.delete(
+      await apiClient.delete(
         `/api/recipes/${selectedRecipe._id}`,
         { data: { userId: userId } }
       );
