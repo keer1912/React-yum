@@ -143,7 +143,7 @@ const MyRecipes = ({ userId }) => {
       let response;
       if (selectedRecipe) {
         response = await apiClient.put(
-          `/api/recipes/${selectedRecipe._id}`,
+          `/recipes/${selectedRecipe._id}`,
           recipeData
         );
         setRecipes(prevRecipes => 
@@ -169,7 +169,7 @@ const MyRecipes = ({ userId }) => {
   const handleDeleteRecipe = async () => {
     try {
       await apiClient.delete(
-        `/api/recipes/${selectedRecipe._id}`,
+        `/recipes/${selectedRecipe._id}`,
         { data: { userId: userId } }
       );
       
