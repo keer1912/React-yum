@@ -139,12 +139,12 @@ const Homepage = () => {
       // Log the full request data
       console.log('Sending request with data:', requestData);
   
-        const data = await apiClient.post('/recipes/generate', requestData);
+        const response = await apiClient.post('/recipes/generate', requestData);
     
         // Log the received response
         if (response.status === 200) {
-          console.log('Received response:', data);
-          setGeneratedRecipe(data);
+          console.log('Received response:', response.data);
+          setGeneratedRecipe(response.data);
         }
       } catch (error) {
         console.error("Error:", error);
