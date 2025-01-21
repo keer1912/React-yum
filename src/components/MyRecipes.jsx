@@ -26,15 +26,14 @@ const MyRecipes = ({ userId }) => {
   
         const response = await apiClient.get(`/recipes/${userId}`);
   
-        // Explicitly log and extract response.data
+        // Explicitly log and extract response
         console.log("Full API Response:", response);
-        console.log("API Response Data:", response.data); // Ensure this is an array
   
-        if (!response.data) {
+        if (!response || !Array.isArray(response)) {
           throw new Error("API response does not contain data");
         }
   
-        setRecipes(Array.isArray(response.data) ? response.data : []);
+        setRecipes(response);
       } catch (err) {
         console.error("Error fetching recipes:", err);
       }
