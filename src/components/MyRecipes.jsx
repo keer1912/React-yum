@@ -20,23 +20,26 @@ const MyRecipes = ({ userId }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       if (!userId) return;
-
+  
       try {
+        console.log("Fetching recipes from:", `/recipes/${userId}`);
+  
         const response = await apiClient.get(`/recipes/${userId}`);
-
-        if (response.status !== 200) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        setRecipes(response.data);
+        console.log("API Response Data:", response.data);
+  
+        setRecipes(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
         console.error("Error fetching recipes:", err);
       }
     };
-
+  
     fetchRecipes();
   }, [userId]);
-
+  
+  useEffect(() => {
+    console.log("Updated Recipes State:", recipes);
+  }, [recipes]);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRecipe((prev) => ({
