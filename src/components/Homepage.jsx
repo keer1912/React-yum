@@ -119,47 +119,45 @@ const Homepage = () => {
   // Generate recipe using AI (OpenAI)
   const generateRecipe = async () => {
     if (!searchTerm.trim()) return;
-
+  
     setLoading(true);
     setGeneratedRecipe(null);
     setError("");
-
+  
     // Log the filters before making the request
     console.log('Selected filters:', filters);
     console.log('Selected cuisines:', filters.cuisines);
     console.log('Selected diets:', filters.diets);
-
+  
     try {
       const requestData = {
         ingredients: searchTerm,
         cuisines: filters.cuisines,
         diets: filters.diets
       };
-      
+  
       // Log the full request data
       console.log('Sending request with data:', requestData);
-
+  
       const response = await apiClient.post('/recipes/generate', requestData);
       const data = response.data;
-
+  
       // Log the received response
       console.log('Received response:', data);
-
+  
       if (response.status === 200) {
         setGeneratedRecipe(data);
       } else {
-        setError(data.message || 'Failed to generate recipe. Please try again.');
+        setError(data?.message || 'Failed to generate recipe. Please try again.');
       }
     } catch (error) {
       console.error("Error:", error);
-      setError(error.response?.data?.message || error.message || 'An unexpected error occurred.');
+      setError(error?.response?.data?.message || error.message || 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
-};
-
-
-
+  };
+  
   if (isLoading) {
     return <p>Loading...</p>;
   }
