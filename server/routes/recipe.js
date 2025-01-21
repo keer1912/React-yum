@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';  // Import the CORS package
 import Recipe from '../models/Recipe.js';
 import { OpenAI } from 'openai'; // Correct the import
 import dotenv from 'dotenv';
@@ -6,6 +7,8 @@ import dotenv from 'dotenv';
 dotenv.config(); // Load environment variables
 
 const router = express.Router();
+
+router.use(cors());
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY // Make sure the API key is correctly loaded
@@ -76,7 +79,7 @@ router.post('/generate', async (req, res) => {
 });
 
 
-// Helper function to parse AI response
+// Helper function to parse AI esponse
 function parseRecipeText(text) {
   const sections = text.split('\n');
   let title = '';
