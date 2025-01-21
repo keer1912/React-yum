@@ -25,7 +25,14 @@ const MyRecipes = ({ userId }) => {
         console.log("Fetching recipes from:", `/recipes/${userId}`);
   
         const response = await apiClient.get(`/recipes/${userId}`);
-        console.log("API Response Data:", response.data);
+  
+        // Explicitly log and extract response.data
+        console.log("Full API Response:", response);
+        console.log("API Response Data:", response.data); // Ensure this is an array
+  
+        if (!response.data) {
+          throw new Error("API response does not contain data");
+        }
   
         setRecipes(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
@@ -35,6 +42,7 @@ const MyRecipes = ({ userId }) => {
   
     fetchRecipes();
   }, [userId]);
+  
   
   useEffect(() => {
     console.log("Updated Recipes State:", recipes);
