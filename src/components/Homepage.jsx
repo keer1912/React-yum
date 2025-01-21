@@ -93,7 +93,7 @@ const Homepage = () => {
         userId: userData.userId // Add userId here
       };
 
-      const response = await axios.post("http://localhost:5000/api/recipes", recipeData); // Correct API endpoint
+      const response = await axios.post("/api/recipes", recipeData); // Correct API endpoint
 
       if (response.status === 201) { // Check for correct status code
         setIsSaved(true);

@@ -21,7 +21,7 @@ const MyRecipes = ({ userId }) => {
       if (!userId) return;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/recipes/${userId}`, {
+        const response = await fetch(`/api/recipes/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -137,7 +137,7 @@ const MyRecipes = ({ userId }) => {
       let response;
       if (selectedRecipe) {
         response = await axios.put(
-          `http://localhost:5000/api/recipes/${selectedRecipe._id}`,
+          `/api/recipes/${selectedRecipe._id}`,
           recipeData
         );
         setRecipes(prevRecipes => 
@@ -146,7 +146,7 @@ const MyRecipes = ({ userId }) => {
           )
         );
       } else {
-        response = await axios.post('http://localhost:5000/api/recipes', recipeData);
+        response = await axios.post('/api/recipes', recipeData);
         setRecipes(prevRecipes => [...prevRecipes, response.data]);
       }
 
@@ -163,7 +163,7 @@ const MyRecipes = ({ userId }) => {
   const handleDeleteRecipe = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/recipes/${selectedRecipe._id}`,
+        `/api/recipes/${selectedRecipe._id}`,
         { data: { userId: userId } }
       );
       
