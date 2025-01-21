@@ -124,12 +124,12 @@ const MyRecipes = ({ userId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
       if (!recipeTitle.trim()) {
         throw new Error("Recipe title is required");
       }
-
+  
       const recipeData = {
         title: recipeTitle,
         ingredients: ingredients.filter(ing => ing.name.trim() !== ''),
@@ -138,23 +138,25 @@ const MyRecipes = ({ userId }) => {
         userId: userId,
         origin: selectedRecipe ? selectedRecipe.origin : 0
       };
-
+  
       let response;
       if (selectedRecipe) {
         response = await apiClient.put(
           `/recipes/${selectedRecipe._id}`,
           recipeData
         );
+        // Update the recipes state immediately with the updated recipe
         setRecipes(prevRecipes => 
           prevRecipes.map(recipe => 
-            recipe._id === selectedRecipe._id ? response.data : recipe
+            recipe._id === selectedRecipe._id ? response : recipe
           )
         );
+        setSelectedRecipe(response); // Update the selected recipe with the response data
       } else {
         response = await apiClient.post('/recipes', recipeData);
-        setRecipes(prevRecipes => [...prevRecipes, response.data]);
+        setRecipes(prevRecipes => [...prevRecipes, response]);
       }
-
+  
       setIsFormVisible(false);
       resetForm();
     } catch (error) {
