@@ -124,11 +124,6 @@ const Homepage = () => {
     setGeneratedRecipe(null);
     setError("");
   
-    // Log the filters before making the request
-    console.log('Selected filters:', filters);
-    console.log('Selected cuisines:', filters.cuisines);
-    console.log('Selected diets:', filters.diets);
-  
     try {
       const requestData = {
         ingredients: searchTerm,
@@ -136,23 +131,22 @@ const Homepage = () => {
         diets: filters.diets
       };
   
-      // Log the full request data
-      console.log('Sending request with data:', requestData);
+      const response = await apiClient.post('/recipes/generate', requestData);
+      const data = response.data;
   
-        const response = await apiClient.post('/recipes/generate', requestData);
-    
-        // Log the received response
-        if (response.status === 200) {
-          console.log('Received response:', response.data);
-          setGeneratedRecipe(response.data);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("Sorry, I have never heard of these mysterious ingredients. Please try again.");
-      } finally {
-        setLoading(false);
+      if (response.status === 200) {
+        console.log('Received response:', data); // Log the received response
+        setGeneratedRecipe(data);
+      } else {
+        setError(data?.message || 'Failed to generate recipe. Please try again.');
       }
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error?.response?.data?.message || error.message || 'An unexpected error occurred.');
+    } finally {
+      setLoading(false);
     }
+  };
   
   if (isLoading) {
     return <p>Loading...</p>;
