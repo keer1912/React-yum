@@ -6,7 +6,12 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
-router.use(cors());
+// Enable CORS for the frontend domain
+router.use(cors({
+  origin: 'https://react-yum.vercel.app/', // Replace with your actual Vercel frontend URL
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -48,7 +53,7 @@ router.post('/signup', async (req, res) => {
     // Save user to database
     await newUser.save();
 
-    // Generate JWT token - Fixed to use newUser instance
+    // Generate JWT token
     const token = jwt.sign(
       { 
         userId: newUser._id, 
