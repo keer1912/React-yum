@@ -152,7 +152,7 @@ const MyRecipes = ({ userId }) => {
           )
         );
       } else {
-        response = await apiClient.post('/api/recipes', recipeData);
+        response = await apiClient.post('/recipes', recipeData);
         setRecipes(prevRecipes => [...prevRecipes, response.data]);
       }
 
