@@ -139,24 +139,20 @@ const Homepage = () => {
       // Log the full request data
       console.log('Sending request with data:', requestData);
   
-      const response = await apiClient.post('/recipes/generate', requestData);
-      const data = response.data;
-  
-      // Log the received response
-      console.log('Received response:', data);
-  
-      if (response.status === 200) {
-        setGeneratedRecipe(data);
-      } else {
-        setError(data?.message || 'Failed to generate recipe. Please try again.');
+        const data = await apiClient.post('/recipes/generate', requestData);
+    
+        // Log the received response
+        if (response.status === 200) {
+          console.log('Received response:', data);
+          setGeneratedRecipe(data);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("Sorry, I have never heard of these mysterious ingredients. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error:", error);
-      setError(error?.response?.data?.message || error.message || 'An unexpected error occurred.');
-    } finally {
-      setLoading(false);
     }
-  };
   
   if (isLoading) {
     return <p>Loading...</p>;
