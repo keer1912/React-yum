@@ -95,13 +95,31 @@ const Homepage = () => {
 
       const response = await apiClient.post("/recipes", recipeData); // Correct API endpoint
 
-      if (response.status === 201) { // Check for correct status code
+      if (response && response._id) { // Check for successful response
         setIsSaved(true);
-        alert("Recipe saved successfully!");
+        // Add visual feedback
+        const successMessage = document.createElement('div');
+        successMessage.textContent = 'Recipe saved successfully!';
+        successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg';
+        document.body.appendChild(successMessage);
+        
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+          document.body.removeChild(successMessage);
+        }, 3000);
       }
     } catch (error) {
       console.error("Error saving recipe:", error);
-      alert("Failed to save the recipe.");
+      // Add error feedback
+      const errorMessage = document.createElement('div');
+      errorMessage.textContent = 'Failed to save recipe. Please try again.';
+      errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg';
+      document.body.appendChild(errorMessage);
+      
+      // Remove the error message after 3 seconds
+    setTimeout(() => {
+      document.body.removeChild(errorMessage);
+    }, 3000);
     }
   };
 
@@ -123,6 +141,7 @@ const Homepage = () => {
     setLoading(true);
     setGeneratedRecipe(null);
     setError("");
+    setIsSaved(false);
 
     // Log the filters before making the request
     console.log('Selected filters:', filters);
@@ -207,11 +226,25 @@ const Homepage = () => {
               {generatedRecipe.title}
             </h3>
             <button
-              onClick={saveRecipe}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              {isSaved ? "Saved" : "Save"}
-            </button>
+            onClick={saveRecipe}
+            disabled={isSaved}
+            className={`${
+              isSaved 
+                ? 'bg-green-500 hover:bg-green-600' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white px-4 py-2 rounded transition-colors duration-200 flex items-center gap-2`}
+          >
+            {isSaved ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Saved!
+              </>
+            ) : (
+              'Save Recipe'
+            )}
+          </button>
           </div>
 
           <h4 className="text-xl md:text-2xl font-bold font-roboto-mono mt-4">
