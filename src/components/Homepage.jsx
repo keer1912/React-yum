@@ -93,7 +93,7 @@ const Homepage = () => {
         userId: userData.userId // Add userId here
       };
 
-      const response = await axios.post("/api/recipes", recipeData); // Correct API endpoint
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/recipes`, recipeData); // Correct API endpoint
 
       if (response.status === 201) { // Check for correct status code
         setIsSaved(true);
@@ -116,21 +116,19 @@ const Homepage = () => {
   };
   
 
+  // Generate recipe using AI (OpenAI)
   const generateRecipe = async () => {
     if (!searchTerm.trim()) return;
-  
+
     setLoading(true);
     setGeneratedRecipe(null);
     setError("");
-  
-    // Debug logging
-    console.log('Full URL:', `${import.meta.env.VITE_API_BASE_URL}/recipes/generate`);
-    console.log('Request Data:', {
-      ingredients: searchTerm,
-      cuisines: filters.cuisines,
-      diets: filters.diets
-    });
-  
+
+    // Log the filters before making the request
+    console.log('Selected filters:', filters);
+    console.log('Selected cuisines:', filters.cuisines);
+    console.log('Selected diets:', filters.diets);
+
     try {
       const requestData = {
         ingredients: searchTerm,
@@ -138,20 +136,23 @@ const Homepage = () => {
         diets: filters.diets
       };
       
-      const data = await apiClient.post('/recipes/generate', requestData);
-      console.log('Generated recipe data:', data);
+      // Log the full request data
+      console.log('Sending request with data:', requestData);
+
+      const response = await apiClient.post('/recipes/generate', requestData);
+      const data = response.data;
+
+      // Log the received response
+      console.log('Received response:', data);
+
       setGeneratedRecipe(data);
     } catch (error) {
-      console.error("Recipe generation error:", {
-        message: error.message,
-        status: error.status,
-        fullError: error
-      });
-      setError(error.message || "Failed to generate recipe. Please try again.");
+      console.error("Error:", error);
+      setError(error.response?.data?.message || error.message || 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
-  };
+};
 
 
 
@@ -193,7 +194,7 @@ const Homepage = () => {
                 </button>
                 <button
                   type="button"
-                  className="px-4 py-2 bg-[#fabd00] text-black rounded hover:bg-[#D9A500] font-roboto-mono"
+                  className="px-4 py-2 bg-[#fabd00] text-white rounded hover:bg-[#ff9900]"
                   onClick={generateRecipe}
                   disabled={loading}
                 >

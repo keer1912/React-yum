@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';  // Import the CORS package
 import Recipe from '../models/Recipe.js';
 import { OpenAI } from 'openai'; // Correct the import
 import dotenv from 'dotenv';
@@ -7,12 +6,6 @@ import dotenv from 'dotenv';
 dotenv.config(); // Load environment variables
 
 const router = express.Router();
-
-router.use(cors({
-  origin: 'https://react-yum.vercel.app', // Replace with your actual Vercel frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY // Make sure the API key is correctly loaded
@@ -83,7 +76,7 @@ router.post('/generate', async (req, res) => {
 });
 
 
-// Helper function to parse AI esponse
+// Helper function to parse AI response
 function parseRecipeText(text) {
   const sections = text.split('\n');
   let title = '';
@@ -135,7 +128,7 @@ router.get('/:userId', async (req, res) => {
 
 // Add a new recipe
 router.post('/', async (req, res) => {
-  const { userId, title, ingredients, instructions, image,origin } = req.body;
+  const { userId, title, ingredients, instructions, image, origin } = req.body;
 
   if (!userId) {
     return res.status(400).json({ message: 'User ID is required' });
@@ -147,7 +140,7 @@ router.post('/', async (req, res) => {
     ingredients,
     instructions,
     image,
-    origin
+    origin, // Ensure origin is included
   });
 
   try {
@@ -170,6 +163,7 @@ router.put('/:recipeId', async (req, res) => {
           ingredients: req.body.ingredients,
           instructions: req.body.instructions,
           image: req.body.image,
+          origin: req.body.origin, // Ensure origin is included
         },
       },
       { new: true }
