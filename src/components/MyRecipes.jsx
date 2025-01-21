@@ -197,8 +197,9 @@ const MyRecipes = ({ userId, userData }) => {
   };
 
   return (
-    <div className="flex">
+    <div>
       <NavBar username={userData?.username} />
+    <div className="flex">
      {/* Sidebar */}
         <div className="w-1/4 p-4">
           <div className="flex items-center justify-between mb-4">
@@ -244,8 +245,9 @@ const MyRecipes = ({ userId, userData }) => {
               ))}
             </ul>
           </div>
-        </div>
-          
+            </div>
+          </div>
+        );
       {/* Right section */}
       <div className="w-3/4 p-4">
         {isFormVisible ? (
