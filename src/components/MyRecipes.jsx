@@ -3,17 +3,17 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import NavBar from "./NavBar";
 
-const MyRecipes = ({ userId, userData }) => {
+const MyRecipes = ({ userId }) => {
   const [recipeTitle, setRecipeTitle] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [image, setImage] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [draggedIndex, setDraggedIndex] = useState(null);
-  const [isFormVisible, setIsFormVisible] = useState(false); // Toggle visibility of the form
-  const [selectedRecipe, setSelectedRecipe] = useState(null); // Store selected recipe details
-  const [isSubmitting, setIsSubmitting] = useState(false); // State to track form submission
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // State for delete confirmation modal
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,17 +21,17 @@ const MyRecipes = ({ userId, userData }) => {
       if (!userId) return;
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/recipes/${userId}`, {
+        const response = await fetch(`/api/recipes/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
-        if (response.status !== 200) {
+        if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = response.data;
+        const data = await response.json();
         setRecipes(data);
       } catch (err) {
         console.error("Error fetching recipes:", err);
@@ -116,7 +116,6 @@ const MyRecipes = ({ userId, userData }) => {
     setSelectedRecipe(null);
   };
 
-  // Update the handleSubmit function's API calls
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -128,17 +127,17 @@ const MyRecipes = ({ userId, userData }) => {
 
       const recipeData = {
         title: recipeTitle,
-        ingredients: ingredients.filter(ing => ing.name.trim() !== ''), // Filter out empty ingredients
-        instructions: instructions.filter(inst => inst.trim() !== ''), // Filter out empty instructions
+        ingredients: ingredients.filter(ing => ing.name.trim() !== ''),
+        instructions: instructions.filter(inst => inst.trim() !== ''),
         image: image,
         userId: userId,
-        origin: selectedRecipe ? selectedRecipe.origin : 0 // Preserve origin for edited recipes
+        origin: selectedRecipe ? selectedRecipe.origin : 0
       };
 
       let response;
       if (selectedRecipe) {
         response = await axios.put(
-          `${import.meta.env.VITE_API_BASE_URL}/recipes/${selectedRecipe._id}`,
+          `/api/recipes/${selectedRecipe._id}`,
           recipeData
         );
         setRecipes(prevRecipes => 
@@ -147,12 +146,12 @@ const MyRecipes = ({ userId, userData }) => {
           )
         );
       } else {
-        response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/recipes`, recipeData);
+        response = await axios.post('/api/recipes', recipeData);
         setRecipes(prevRecipes => [...prevRecipes, response.data]);
       }
 
       setIsFormVisible(false);
-      resetForm(); // Now this function is defined
+      resetForm();
     } catch (error) {
       console.error('Error submitting recipe:', error);
       alert("Failed to submit the recipe. Please ensure all required fields are filled.");
@@ -161,19 +160,18 @@ const MyRecipes = ({ userId, userData }) => {
     }
   };
 
-  // Update the handleDeleteRecipe function
   const handleDeleteRecipe = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/recipes/${selectedRecipe._id}`,
-        { data: { userId: userId } }  // Send userId in request body
+        `/api/recipes/${selectedRecipe._id}`,
+        { data: { userId: userId } }
       );
       
       setRecipes(prevRecipes => 
         prevRecipes.filter(recipe => recipe._id !== selectedRecipe._id)
       );
       setSelectedRecipe(null);
-      setIsDeleteModalVisible(false); // Close modal after deletion
+      setIsDeleteModalVisible(false);
     } catch (error) {
       console.error('Error deleting recipe:', error);
     }
@@ -181,7 +179,6 @@ const MyRecipes = ({ userId, userData }) => {
 
   const handleRecipeClick = (recipe) => {
     setSelectedRecipe(recipe);
-    // Populate form with recipe data when editing
     setRecipeTitle(recipe.title || '');
     setIngredients(recipe.ingredients.length > 0 ? recipe.ingredients : [{ quantity: '', unit: '', name: '' }]);
     setInstructions(recipe.instructions.length > 0 ? recipe.instructions : ['']);
@@ -192,19 +189,18 @@ const MyRecipes = ({ userId, userData }) => {
   const handleFormToggle = () => {
     setIsFormVisible(!isFormVisible);
     if (!isFormVisible) {
-      resetForm(); // Reset form when opening new recipe form
+      resetForm();
     }
   };
 
   return (
     <div>
-      <NavBar username={userData?.username} />
+      <NavBar />
     <div className="flex">
-     {/* Sidebar */}
-        <div className="w-1/4 p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold font-roboto-mono">Your Recipes</h2>
-            <button
+      <div className="w-1/4 p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold font-roboto-mono">Your Recipes</h2>
+          <button
             onClick={handleFormToggle}
             className={`font-roboto-mono px-4 py-2 bg-transparent text-black rounded hover:bg-gray-100 ${
               isFormVisible ? 'text-lg' : 'text-xl'
@@ -212,47 +208,44 @@ const MyRecipes = ({ userId, userData }) => {
           >
             {isFormVisible ? 'Cancel' : '+'}
           </button>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold font-roboto-mono">My own yums</h3>
-            <ul className="space-y-2">
-              {recipes.filter(recipe => recipe.origin === 0).map((recipe) => (
-                <li
-                  key={recipe._id}
-                  className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
-                    selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
-                  }`}
-                  onClick={() => handleRecipeClick(recipe)}
-                >
-                  {recipe.title}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mt-12 font-roboto-mono">AI yums</h3>
-            <ul className="space-y-2">
-              {recipes.filter(recipe => recipe.origin !== 0).map((recipe) => (
-                <li
-                  key={recipe._id}
-                  className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
-                    selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
-                  }`}
-                  onClick={() => handleRecipeClick(recipe)}
-                >
-                  {recipe.title}
-                </li>
-              ))}
-            </ul>
-          </div>
-            </div>
-          </div>
-        );
-      {/* Right section */}
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold font-roboto-mono">My own yums</h3>
+          <ul className="space-y-2">
+            {recipes.filter(recipe => recipe.origin === 0).map((recipe) => (
+              <li
+                key={recipe._id}
+                className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
+                  selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
+                }`}
+                onClick={() => handleRecipeClick(recipe)}
+              >
+                {recipe.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold mt-12 font-roboto-mono">AI yums</h3>
+          <ul className="space-y-2">
+            {recipes.filter(recipe => recipe.origin !== 0).map((recipe) => (
+              <li
+                key={recipe._id}
+                className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
+                  selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
+                }`}
+                onClick={() => handleRecipeClick(recipe)}
+              >
+                {recipe.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
       <div className="w-3/4 p-4">
         {isFormVisible ? (
           <>
-            <h2 className="text-xl font-bold mb-4">
+            <h2 className="text-xl font-bold mb-4 font-roboto-mono" >
               {selectedRecipe ? 'Edit Recipe' : 'Add Recipe'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -264,8 +257,6 @@ const MyRecipes = ({ userId, userData }) => {
                 className="border p-2 w-full rounded"
                 required
               />
-  
-              {/* Ingredients Section */}
               <div>
                 <h3 className="text-lg font-semibold mb-2">Ingredients</h3>
                 <div className="space-y-2">
@@ -330,8 +321,6 @@ const MyRecipes = ({ userId, userData }) => {
                   Add Ingredient
                 </button>
               </div>
-  
-              {/* Instructions Section */}
               <div>
                 <h3 className="text-lg font-semibold mb-2">Instructions</h3>
                 <ul className="space-y-2">
@@ -382,8 +371,6 @@ const MyRecipes = ({ userId, userData }) => {
                   Add Instruction
                 </button>
               </div>
-  
-              {/* Image URL Input */}
               <input
                 type="text"
                 value={image || ''}
@@ -391,13 +378,11 @@ const MyRecipes = ({ userId, userData }) => {
                 placeholder="Image URL (optional)"
                 className="border p-2 w-full rounded"
               />
-  
-              {/* Submit Button */}
               <div className="flex gap-2">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex-1 
+                  className={`bg-[#fabd00] text-black rounded hover:bg-[#D9A500] font-roboto-mono flex-1 py-4 px-2
                     ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {isSubmitting ? 'Saving...' : selectedRecipe ? 'Update Recipe' : 'Add Recipe'}
@@ -419,26 +404,23 @@ const MyRecipes = ({ userId, userData }) => {
           </>
         ) : selectedRecipe ? (
           <div>
-            {/* Recipe Display */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold font-roboto-mono">{selectedRecipe.title}</h2>
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsFormVisible(true)}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  className="px-4 py-2 bg-[#fabd00] text-black rounded hover:bg-[#D9A500] font-roboto-mono"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => setIsDeleteModalVisible(true)} // Show delete confirmation modal
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={() => setIsDeleteModalVisible(true)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 font-roboto-mono"
                 >
                   Delete
                 </button>
               </div>
             </div>
-  
-            {/* Display Image if exists */}
             {selectedRecipe.image && (
               <div className="mb-6">
                 <img
@@ -448,8 +430,6 @@ const MyRecipes = ({ userId, userData }) => {
                 />
               </div>
             )}
-  
-            {/* Ingredients List */}
             <div className="mb-6">
               <h3 className="text-lg font-bold mb-2 font-roboto-mono">Ingredients</h3>
               <ul className="space-y-2 font-space-mono">
@@ -460,8 +440,6 @@ const MyRecipes = ({ userId, userData }) => {
                 ))}
               </ul>
             </div>
-  
-            {/* Instructions List */}
             <div>
               <h3 className="text-lg font-semibold mb-2 font-roboto-mono">Instructions</h3>
               <ol className="list-decimal list-inside space-y-2">
@@ -477,8 +455,6 @@ const MyRecipes = ({ userId, userData }) => {
           </div>
         )}
       </div>
-
-      {/* Delete Confirmation Modal */}
       {isDeleteModalVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg">
@@ -501,6 +477,7 @@ const MyRecipes = ({ userId, userData }) => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };
