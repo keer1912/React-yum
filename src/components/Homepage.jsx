@@ -116,19 +116,21 @@ const Homepage = () => {
   };
   
 
-  // Generate recipe using AI (OpenAI)
   const generateRecipe = async () => {
     if (!searchTerm.trim()) return;
-
+  
     setLoading(true);
     setGeneratedRecipe(null);
     setError("");
-
-    // Log the filters before making the request
-    console.log('Selected filters:', filters);
-    console.log('Selected cuisines:', filters.cuisines);
-    console.log('Selected diets:', filters.diets);
-
+  
+    // Debug logging
+    console.log('Full URL:', `${import.meta.env.VITE_API_BASE_URL}/recipes/generate`);
+    console.log('Request Data:', {
+      ingredients: searchTerm,
+      cuisines: filters.cuisines,
+      diets: filters.diets
+    });
+  
     try {
       const requestData = {
         ingredients: searchTerm,
@@ -140,12 +142,16 @@ const Homepage = () => {
       console.log('Generated recipe data:', data);
       setGeneratedRecipe(data);
     } catch (error) {
-      console.error("Recipe generation error:", error);
+      console.error("Recipe generation error:", {
+        message: error.message,
+        status: error.status,
+        fullError: error
+      });
       setError(error.message || "Failed to generate recipe. Please try again.");
     } finally {
       setLoading(false);
     }
-};
+  };
 
 
 
