@@ -170,7 +170,7 @@ const MyRecipes = ({ userId }) => {
     try {
       await apiClient.delete(
         `/recipes/${selectedRecipe._id}`,
-        { data: { userId: userId } }
+        { userId: userId } 
       );
       
       setRecipes(prevRecipes => 
@@ -218,33 +218,33 @@ const MyRecipes = ({ userId }) => {
         <div>
           <h3 className="text-lg font-semibold font-roboto-mono">My own yums</h3>
           <ul className="space-y-2">
-            {recipes.filter(recipe => recipe.origin === 0).map((recipe) => (
-              <li
-                key={recipe._id}
-                className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
-                  selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
-                }`}
-                onClick={() => handleRecipeClick(recipe)}
-              >
-                {recipe.title}
-              </li>
-            ))}
+          {recipes.filter(recipe => recipe?.origin === 0).map((recipe) => (
+            <li
+              key={recipe._id}
+              className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
+                selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
+              }`}
+              onClick={() => handleRecipeClick(recipe)}
+            >
+              {recipe.title}
+            </li>
+          ))}
           </ul>
         </div>
         <div>
           <h3 className="text-lg font-semibold mt-12 font-roboto-mono">AI yums</h3>
           <ul className="space-y-2">
-            {recipes.filter(recipe => recipe.origin !== 0).map((recipe) => (
-              <li
-                key={recipe._id}
-                className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
-                  selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
-                }`}
-                onClick={() => handleRecipeClick(recipe)}
-              >
-                {recipe.title}
-              </li>
-            ))}
+          {recipes.filter(recipe => (recipe?.origin || 0) !== 0).map((recipe) => (
+            <li
+              key={recipe._id}
+              className={`font-medium font-roboto-mono p-2 hover:bg-gray-100 rounded cursor-pointer ${
+                selectedRecipe?._id === recipe._id ? 'bg-gray-100' : ''
+              }`}
+              onClick={() => handleRecipeClick(recipe)}
+            >
+              {recipe.title}
+            </li>
+          ))}
           </ul>
         </div>
       </div>

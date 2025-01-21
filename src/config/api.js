@@ -70,15 +70,17 @@ export const apiClient = {
     return handleResponse(response);
   },
 
-  delete: async (endpoint) => {
+  delete: async (endpoint, data) => {  // Add data parameter
     console.log('Making DELETE request to:', `${API_BASE_URL}${endpoint}`);
     
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',  // Add this
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
+      body: JSON.stringify(data),  // Add this
     });
     return handleResponse(response);
-  }
+  },
 };
