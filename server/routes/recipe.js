@@ -8,7 +8,11 @@ dotenv.config(); // Load environment variables
 
 const router = express.Router();
 
-router.use(cors());
+router.use(cors({
+  origin: 'https://react-yum.vercel.app', // Replace with your actual Vercel frontend URL
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY // Make sure the API key is correctly loaded
